@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroHydro - Biosensing Sweat Patch</title>
+
+    <!-- Tailwind CSS (Styling Framework) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Base Settings */
+        body {
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+            background-color: #f8fafc;
+            /* slate-50 */
+            color: #1e293b;
+            /* slate-800 */
+        }
+
+        .font-caprasimo {
+            font-family: 'Caprasimo', serif;
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-fraunces {
+            font-family: 'Fraunces', serif;
+            font-variation-settings: 'SOFT' 100;
+        }
+
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slideUp {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        @keyframes pulse-slow {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .8;
+            }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(-5px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slideRight {
+            animation: slideRight 0.3s ease-out forwards;
+        }
+
+        /* 3D Transform Utilities */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .rotate-x-12 {
+            transform: rotateX(50deg);
+        }
+
+        .-rotate-x-12 {
+            transform: rotateX(50deg);
+        }
+
+        .layer-visual {
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        /* Nav Link Underline Effect */
+        .nav-link {
+            position: relative;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Interactive Layer Styles */
+        .layer-perspective {
+            perspective: 1000px;
+        }
+
+        .layer-stack {
+            transform-style: preserve-3d;
+            transform: rotateY(20deg) rotateX(5deg) translateX(-120px);
+            /* Move left and add 3D angle */
+            transition: transform 0.5s ease-out;
+        }
+
+        .interactive-layer {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            transform-style: preserve-3d;
+            /* Default state */
+            transform: translateZ(0);
+        }
+
+        .interactive-layer:hover {
+            transform: translateX(20px) translateZ(30px) scale(1.05);
+            /* Pop out in 3D */
+            z-index: 100 !important;
+            box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .interactive-layer:hover .layer-glow {
+            opacity: 1;
+        }
+
+        .interactive-layer:hover .layer-label {
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+            transform: translateX(-10px);
+            /* Move separate from layer */
+        }
+
+        .layer-glow {
+            transition: opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        .layer-label {
+            transition: all 0.3s ease;
+        }
+
+        /* Clickable Layer Overlay System */
+        .layer-overlay-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .layer-overlay-container svg {
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .layer-region {
+            pointer-events: auto;
+            cursor: pointer;
+            fill: transparent;
+            stroke: transparent;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        .layer-region:hover {
+            fill: rgba(59, 130, 246, 0.15);
+            stroke: rgba(59, 130, 246, 0.8);
+            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
+        }
+
+        .layer-region.active {
+            fill: rgba(59, 130, 246, 0.25);
+            stroke: rgba(59, 130, 246, 1);
+            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.7));
+        }
+
+        /* Layer Info Panel */
+        .layer-info-panel {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px 24px;
+            max-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .layer-info-panel.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .layer-info-panel::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 16px;
+            height: 16px;
+            background: rgba(15, 23, 42, 0.95);
+            border-left: 1px solid rgba(59, 130, 246, 0.3);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .layer-info-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .layer-info-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .layer-info-desc {
+            font-size: 13px;
+            color: rgba(148, 163, 184, 1);
+            line-height: 1.6;
+        }
+
+        /* Layer indicator dots */
+        .layer-indicators {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .layer-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.3);
+            border: 2px solid rgba(148, 163, 184, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .layer-indicator:hover,
+        .layer-indicator.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Team Grid/Flex Container */
+        .team-container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 24px;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 20px 24px 60px 24px;
+            /* Bottom padding for hover effects */
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+            mask-image: linear-gradient(to right, black 95%, transparent 100%);
+        }
+
+        .team-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Team Member Card Styles */
+        .member-card {
+            position: relative;
+            border-radius: 12px;
+            background: #2a2a2a;
+            /* Match Oura dark grey */
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+
+            /* Initial State */
+            flex: 0 0 280px;
+            height: 380px;
+            display: flex;
+        }
+
+        /* Active/Expanded State */
+        .member-card.active {
+            flex: 0 0 700px;
+            /* Expanded Width */
+            cursor: default;
+        }
+
+        /* Image Wrapper */
+        .card-image-wrapper {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+            position: relative;
+            transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .member-card.active .card-image-wrapper {
+            width: 40%;
+        }
+
+        .card-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        /* Expand Button */
+        .member-plus-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: #f1f0e9;
+            /* Off-white */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            cursor: pointer;
+            color: #1a1a1a;
+        }
+
+        .member-card:not(.active):hover .member-plus-btn {
+            transform: rotate(90deg);
+        }
+
+        /* Hide Plus btn when active */
+        .member-card.active .member-plus-btn {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Content Panel (Right Side) */
+        .card-content-panel {
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #2a2a2a;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .member-card.active .card-content-panel {
+            width: 60%;
+            opacity: 1;
+            padding: 40px;
+        }
+
+        /* Close Button inside panel */
+        .close-bio-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: #f1f0e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #1a1a1a;
+            transition: transform 0.2s ease;
+        }
+
+        .close-bio-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Typography inside panel */
+        .bio-name {
+            font-family: 'Fraunces', serif;
+            /* Or Playfair */
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .bio-role {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .bio-desc {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #d1d5db;
+            margin-bottom: 24px;
+        }
+
+        .bio-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .bio-link:hover {
+            opacity: 1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .member-card.active {
+                flex: 0 0 100%;
+                flex-direction: column;
+                height: auto;
+            }
+
+            .member-card.active .card-image-wrapper {
+                width: 100%;
+                height: 300px;
+            }
+
+            .member-card.active .card-content-panel {
+                width: 100%;
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6 bg-transparent">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-3xl tracking-tight text-white font-fraunces font-black">
+                    NeuroHydro
+                </span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#product"
+                    class="nav-link text-base text-white/90 hover:text-white transition-colors">Product</a>
+                <a href="#problem" class="nav-link text-base text-white/90 hover:text-white transition-colors">The
+                    Problem</a>
+                <a href="#prototype"
+                    class="nav-link text-base text-white/90 hover:text-white transition-colors">Prototype</a>
+                <a href="#app" class="nav-link text-base text-white/90 hover:text-white transition-colors">The
+                    App</a>
+                <a href="#team" class="nav-link text-base text-white/90 hover:text-white transition-colors">Team</a>
+                <a href="#mission"
+                    class="nav-link text-base text-white/90 hover:text-white transition-colors">Mission</a>
+                <a href="#waitlist"
+                    class="font-playfair bg-white/10 backdrop-blur-sm border border-white/30 text-white px-5 py-2.5 rounded-full text-base font-medium hover:bg-white hover:text-slate-900 transition-all">
+                    Join Waitlist
+                </a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden text-white">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="absolute top-full left-0 w-full bg-white shadow-lg py-4 flex flex-col items-center gap-4 hidden animate-fadeIn">
+            <a href="#product" class="text-slate-800 py-2">Product</a>
+            <a href="#problem" class="text-slate-800 py-2">The Problem</a>
+            <a href="#prototype" class="text-slate-800 py-2">Prototype</a>
+            <a href="#app" class="text-slate-800 py-2">The App</a>
+            <a href="#team" class="text-slate-800 py-2">Team</a>
+            <a href="#mission" class="text-slate-800 py-2">Mission</a>
+            <a href="#waitlist" class="bg-blue-600 text-white px-6 py-2 rounded-full w-3/4 text-center mt-2">Join
+                Waitlist</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header id="hero" class="relative w-full h-screen overflow-hidden">
+        <!-- Full-bleed Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img src="./images/cognitive_function_v2.jpeg" alt="Athlete running with NeuroHydro biosensor patch"
+                class="w-full h-full object-cover object-center">
+        </div>
+
+        <!-- Gradient Overlays for text readability -->
+        <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-transparent to-black/40"></div>
+
+        <!-- Content positioned at bottom-right like Cadence -->
+        <div id="hero-content"
+            class="relative z-20 h-full flex flex-col justify-end items-end px-8 md:px-16 lg:px-12 pb-20 md:pb-28">
+
+            <div class="text-right max-w-2xl space-y-6">
+                <!-- Main Headline -->
+                <h1 class="text-4xl md:text-6xl lg:text-7xl text-white leading-tight font-playfair">
+                    Hydrate for your <br />
+                    <span class="italic text-blue-200">Mind & Mood.</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="text-base md:text-lg text-slate-300 font-inter font-light leading-relaxed max-w-lg ml-auto">
+                    Science-backed biosensing for real-time hydration & electrolyte insights.
+                </p>
+
+                <!-- CTA Button -->
+                <div class="pt-4">
+                    <a href="#waitlist"
+                        class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white px-8 py-4 text-sm font-medium tracking-widest hover:bg-white hover:text-slate-900 transition-all duration-300">
+                        JOIN WAITLIST
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce text-white/70">
+            <i data-lucide="arrow-right" class="w-6 h-6 rotate-90"></i>
+        </div>
+    </header>
+
+    <!-- PRODUCT INFORMATION -->
+    <section id="product" class="relative w-full min-h-screen text-white overflow-hidden"
+        style="background: linear-gradient(110deg, #f8fafc 0%, #e2e8f0 25%, #64748b 45%, #1e293b 60%, #0f172a 75%, #020617 100%);">
+
+        <!-- Content Grid -->
+        <div class="relative z-10 container mx-auto px-6 py-24 lg:py-32">
+            <div class="grid lg:grid-cols-2 gap-16 items-center min-h-[800px]">
+
+                <!-- LEFT: Interactive Product Layers (on white bg) -->
+                <div class="relative flex items-center justify-center order-2 lg:order-1 py-12 layer-perspective">
+                    <!-- Interactive Product Container -->
+                    <div id="product-layers-container"
+                        class="relative w-full max-w-xl transform scale-125 -translate-x-12">
+                        <!-- Product Image -->
+                        <img src="./images/product_layers_v2_transparent.png"
+                            alt="NeuroHydro biosensor layers exploded view"
+                            class="w-full h-auto object-contain opacity-100" style="clip-path: inset(0 15% 0 0);">
+
+                        <!-- SVG Overlay with Clickable Layer Regions -->
+                        <div class="layer-overlay-container" style="clip-path: inset(0 15% 0 0);">
+                            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <!-- Layer 1: Protective Film (top) -->
+                                <rect class="layer-region" data-layer="1" x="5" y="2" width="70" height="16" rx="2" />
+                                <!-- Layer 2: PET Sensing Layer -->
+                                <rect class="layer-region" data-layer="2" x="5" y="20" width="70" height="16" rx="2" />
+                                <!-- Layer 3: Microfluidic Section -->
+                                <rect class="layer-region" data-layer="3" x="5" y="38" width="70" height="16" rx="2" />
+                                <!-- Layer 4: Hydrophilic Filler -->
+                                <rect class="layer-region" data-layer="4" x="5" y="56" width="70" height="16" rx="2" />
+                                <!-- Layer 5: Flexible Skin Adhesive (bottom) -->
+                                <rect class="layer-region" data-layer="5" x="5" y="74" width="70" height="16" rx="2" />
+                            </svg>
+                        </div>
+
+                        <!-- Layer Info Panel -->
+                        <div id="layer-info-panel" class="layer-info-panel">
+                            <div class="layer-info-number" id="layer-number">1</div>
+                            <div class="layer-info-title" id="layer-title">Protective Film</div>
+                            <div class="layer-info-desc" id="layer-desc">A breathable, semi-permeable barrier that
+                                shields electronics from external water and contaminants.</div>
+                        </div>
+
+                        <!-- Layer Indicators -->
+                        <div class="layer-indicators hidden lg:flex">
+                            <div class="layer-indicator" data-layer="1" title="Protective Film"></div>
+                            <div class="layer-indicator" data-layer="2" title="PET Sensing Layer"></div>
+                            <div class="layer-indicator" data-layer="3" title="Microfluidic Section"></div>
+                            <div class="layer-indicator" data-layer="4" title="Hydrophilic Filler"></div>
+                            <div class="layer-indicator" data-layer="5" title="Skin Adhesive"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Text Content -->
+                <div class="flex flex-col justify-center space-y-8 order-1 lg:order-2 lg:pl-24 xl:pl-32">
+                    <!-- Small Label -->
+                    <p class="text-xs font-bold text-blue-400 tracking-[0.3em] uppercase">System Architecture</p>
+
+                    <!-- Main Title -->
+                    <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-white font-playfair">
+                        <span class="font-fraunces font-black">NeuroHydro</span> <br /> Biosensing <br /> Sweat Patch
+                    </h2>
+
+                    <!-- Subtitle -->
+                    <p class="text-xl md:text-2xl font-light text-slate-300 font-playfair italic max-w-md">
+                        A Complete Platform, Formulated for Achieving Your Goals.
+                    </p>
+
+                    <!-- Description -->
+                    <p class="text-slate-400 text-sm max-w-md leading-relaxed">
+                        Engineered with precision microfluidics and advanced biosensors,
+                        our patch delivers real-time electrolyte and hydration insights
+                        directly to your device.
+                    </p>
+
+                    <!-- CTA Button -->
+                    <div class="pt-4">
+                        <a href="#waitlist"
+                            class="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white text-sm font-medium tracking-wide hover:bg-white hover:text-slate-900 transition-all duration-300">
+                            JOIN WAITLIST
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM SECTION (STATIC) -->
+    <section id="problem" class="min-h-screen bg-white flex flex-col justify-center py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12 mt-10">
+                <p class="text-4xl md:text-6xl lg:text-7xl font-playfair italic text-slate-800">
+                    "Everybody's wearing <span
+                        class="text-blue-400 font-fraunces font-bold not-italic">NeuroHydro</span>"
+                </p>
+            </div>
+            <div class="text-center mb-16">
+                <h2 class="text-2xl md:text-3xl font-inter font-light tracking-[0.2em] text-slate-900 uppercase">
+                    THE HIDDEN IMPACT</h2>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+
+                <!-- Card 1 -->
+                <div class="flex flex-col group cursor-pointer relative overflow-hidden">
+                    <div
+                        class="relative h-[400px] mb-6 overflow-hidden bg-slate-100 group-hover:shadow-xl transition-all duration-500">
+                        <img src="./images/physical_performance.jpg"
+                            class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700 ease-in-out transform group-hover:scale-105"
+                            alt="Physical Performance">
+                        <div
+                            class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-medium text-slate-900 mb-3 uppercase tracking-wide">Physical Performance
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4 font-light">Dehydration is directly linked to
+                        reduced cognitive response and increased irritability.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flex flex-col group cursor-pointer relative overflow-hidden">
+                    <div
+                        class="relative h-[400px] mb-6 overflow-hidden bg-slate-100 group-hover:shadow-xl transition-all duration-500">
+                        <img src="./images/cognitive_function.jpg"
+                            class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700 ease-in-out transform group-hover:scale-105"
+                            alt="Cognitive Function">
+                        <div
+                            class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-medium text-slate-900 mb-3 uppercase tracking-wide">Cognitive Function</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4 font-light">Adequate hydration with
+                        electrolyte supplements may be linked to maintenance of normal brain function.</p>
+                </div>
+
+                <!-- Card 3 (Static - No upload) -->
+                <div class="flex flex-col group cursor-pointer relative overflow-hidden">
+                    <div
+                        class="relative h-[400px] mb-6 overflow-hidden bg-slate-100 group-hover:shadow-xl transition-all duration-500 flex items-center justify-center">
+                        <img src="./images/muscular_recovery.jpg"
+                            class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700 ease-in-out transform group-hover:scale-105"
+                            alt="Muscular Recovery">
+                        <div
+                            class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-medium text-slate-900 mb-3 uppercase tracking-wide">Muscular Recovery</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4 font-light">Electrolytes, especially
+                        magnesium, may play a significant role in post-exercise recovery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROTOTYPE / APP SECTION -->
+    <section id="app" class="min-h-screen bg-slate-50 border-t border-slate-200 flex flex-col justify-center py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-playfair font-bold text-slate-900 leading-tight">App Integration
+                </h2>
+                <p class="text-slate-600 mt-4 max-w-2xl mx-auto">
+                    Real-time data visualization connecting your sweat to actionable insights.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                <!-- LEFT: App UI -->
+                <div
+                    class="relative z-20 mx-auto w-full max-w-lg md:max-w-xl rounded-[2rem] overflow-hidden shadow-2xl bg-black">
+                    <video class="w-full h-auto object-cover" autoplay loop muted playsinline>
+                        <source src="./videos/demo.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- RIGHT: Text -->
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Your Personal AI Health Assistant</h3>
+                    <p class="text-slate-600 mb-6 leading-relaxed">The <span
+                            class="font-fraunces font-bold text-slate-800">NeuroHydro</span> app doesn't just show
+                        numbers. It
+                        converts physiological signals into actionable advice for when to hydrate, ensuring you stay at
+                        peak performance.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-2 text-slate-700"><i data-lucide="check-circle-2"
+                                class="w-5 h-5 text-blue-600"></i> Real-time alerts</li>
+                        <li class="flex items-center gap-2 text-slate-700"><i data-lucide="check-circle-2"
+                                class="w-5 h-5 text-blue-600"></i> Mood & focus correlation</li>
+                        <li class="flex items-center gap-2 text-slate-700"><i data-lucide="check-circle-2"
+                                class="w-5 h-5 text-blue-600"></i> Post-workout recovery stats</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Team Section -->
+
+    <!-- Team Section -->
+    <section id="team" class="min-h-screen bg-[#1C1C1E] flex flex-col justify-center py-20 relative overflow-hidden">
+        <!-- Subtle gradient orb for atmosphere -->
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div class="max-w-4xl">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl text-white font-inter font-light leading-tight">
+                        Meet the <span class="font-fraunces font-bold">NeuroHydro</span> <br />
+                        <span class="font-playfair italic block mt-2 text-blue-200">Innovators</span>
+                    </h2>
+                    <p class="text-slate-400 mt-6 text-lg font-light leading-relaxed max-w-lg">
+                        Our team combines expertise in athletics, research, and engineering to deliver accurate,
+                        leading-edge biosensing technology.
+                    </p>
+                </div>
+
+                <a href="#waitlist"
+                    class="group inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors pb-1 border-b border-white/30 hover:border-white">
+                    Get to Know Our Innovators
+                    <i data-lucide="arrow-right"
+                        class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="team-container">
+                <!-- Member 1: Celine Ding -->
+                <div class="member-card">
+                    <div class="card-image-wrapper">
+                        <img src="./images/celine_photo.jpg" alt="Celine Ding">
+                        <div class="member-plus-btn">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-panel">
+                        <div class="close-bio-btn"><i data-lucide="x" class="w-4 h-4"></i></div>
+                        <h3 class="bio-name">Celine Ding</h3>
+                        <p class="bio-role">Middlesex School</p>
+                        <ul class="bio-desc list-disc pl-4 space-y-1 text-sm text-slate-300">
+                            <li>Cross country captain</li>
+                            <li>Mental health advocate</li>
+                        </ul>
+                        <a href="#" class="bio-link">View Full Bio <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- Member 2: Bingchen Hu -->
+                <div class="member-card">
+                    <div class="card-image-wrapper">
+                        <div class="w-full h-full bg-slate-800 flex items-center justify-center">
+                            <img src="./images/bingchen_photo.png" alt="Bingchen Hu" class="opacity-90">
+                        </div>
+                        <div class="member-plus-btn">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-panel">
+                        <div class="close-bio-btn"><i data-lucide="x" class="w-4 h-4"></i></div>
+                        <h3 class="bio-name">Bingchen Hu</h3>
+                        <p class="bio-role">Community Leader</p>
+                        <ul class="bio-desc list-disc pl-4 space-y-1 text-sm text-slate-300">
+                            <li>Teen Comedian</li>
+                            <li>Varsity Soccer Player</li>
+                            <li>Mental Health Teen Advisor</li>
+                            <li>Youth Advisory Board Leader</li>
+                        </ul>
+                        <a href="#" class="bio-link">View Full Bio <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- Member 3: Kerun Li -->
+                <div class="member-card">
+                    <div class="card-image-wrapper">
+                        <img src="./images/kerun_photo.jpg" alt="Kerun Li">
+                        <div class="member-plus-btn">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-panel">
+                        <div class="close-bio-btn"><i data-lucide="x" class="w-4 h-4"></i></div>
+                        <h3 class="bio-name">Kerun Li</h3>
+                        <p class="bio-role">Pomfret School</p>
+                        <ul class="bio-desc list-disc pl-4 space-y-1 text-sm text-slate-300">
+                            <li>Varsity Soccer & Track</li>
+                            <li>Founder, Nutrition & Wellness Club</li>
+                            <li>Research Intern at MGH/Harvard</li>
+                        </ul>
+                        <a href="#" class="bio-link">View Full Bio <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- Member 4: Sophie Liu -->
+                <div class="member-card">
+                    <div class="card-image-wrapper">
+                        <img src="./images/sophie_photo.jpg" alt="Sophie Liu">
+                        <div class="member-plus-btn">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-panel">
+                        <div class="close-bio-btn"><i data-lucide="x" class="w-4 h-4"></i></div>
+                        <h3 class="bio-name">Sophie Liu</h3>
+                        <p class="bio-role">Madeira School</p>
+                        <ul class="bio-desc list-disc pl-4 space-y-1 text-sm text-slate-300">
+                            <li>Dance Company Member</li>
+                            <li>Passionate about health</li>
+                        </ul>
+                        <a href="#" class="bio-link">View Full Bio <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+
+                <!-- Member 5: Ethan Huang -->
+                <div class="member-card">
+                    <div class="card-image-wrapper">
+                        <div class="w-full h-full bg-slate-800 flex items-center justify-center">
+                            <img src="./images/ethan_photo.png" alt="Ethan Huang" class="opacity-90">
+                        </div>
+                        <div class="member-plus-btn">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-panel">
+                        <div class="close-bio-btn"><i data-lucide="x" class="w-4 h-4"></i></div>
+                        <h3 class="bio-name">Ethan Huang</h3>
+                        <p class="bio-role">Innovator</p>
+                        <ul class="bio-desc list-disc pl-4 space-y-1 text-sm text-slate-300">
+                            <li>Competitive fencer</li>
+                            <li>Musician</li>
+                            <li>Environmental advocate</li>
+                            <li>Passionate about sustainability and innovation</li>
+                        </ul>
+                        <a href="#" class="bio-link">View Full Bio <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Our Story (inside Team section) -->
+            <div class="container mx-auto px-6 mt-24">
+                <div class="grid lg:grid-cols-2 gap-16 items-start max-w-6xl mx-auto">
+
+                    <!-- Left: Headline -->
+                    <div class="lg:sticky lg:top-32">
+                        <p class="text-xs font-bold text-blue-400 tracking-[0.3em] uppercase mb-4">About Us</p>
+                        <h3 class="text-4xl md:text-5xl lg:text-6xl text-white font-inter font-light leading-tight">
+                            Our <br />
+                            <span class="font-playfair italic block mt-2 text-blue-200">Story</span>
+                        </h3>
+                        <p class="text-slate-400 mt-6 text-lg font-light leading-relaxed max-w-md">
+                            Mild dehydration is a <span class="text-white font-medium">silent performance killer</span>.
+                            A
+                            small drop in hydration can show up as fatigue, irritability, slower thinking, and weaker
+                            focus—yet most people still rely on thirst, which often signals the problem too late.
+                        </p>
+                    </div>
+
+                    <!-- Right: Story Content -->
+                    <div class="space-y-8">
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8">
+                            <p class="text-slate-300 text-lg leading-relaxed">
+                                <span class="font-fraunces font-bold text-white">NeuroHydro</span> started as a
+                                student-built solution to a real daily pattern we kept seeing in ourselves and our
+                                peers:
+                                intense training, packed academic schedules, and long days—followed by unexplained dips
+                                in
+                                energy and mood.
+                            </p>
+                        </div>
+
+                        <p class="text-slate-300 text-lg leading-relaxed">
+                            We realized hydration wasn't just <span class="text-blue-300 font-medium">"physical."</span>
+                            It
+                            was <span class="text-blue-300 font-medium">cognitive</span>. So we built a wearable sweat
+                            patch
+                            that tracks electrolyte and pH trends in real time, then turns that data into clear,
+                            actionable
+                            guidance through a mobile app.
+                        </p>
+
+                        <div class="border-l-4 border-blue-500 pl-6 py-2">
+                            <p class="text-white text-xl font-playfair italic leading-relaxed">
+                                Our goal is simple: make hydration visible, measurable, and actionable—so students,
+                                athletes, and outdoor workers can protect their focus, stabilize mood, and perform at
+                                their
+                                best <span class="text-blue-300">before</span> dehydration becomes a problem.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Mission Section -->
+    <section id="mission" class="min-h-screen bg-slate-900 text-white flex flex-col justify-center py-24">
+        <div class="container mx-auto px-6">
+
+            <!-- Mission Statement -->
+            <div class="max-w-4xl mx-auto text-center mb-20">
+                <p class="text-xs font-bold text-blue-400 tracking-[0.3em] uppercase mb-6">Our Purpose</p>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-playfair italic text-white leading-tight mb-8">
+                    Mission
+                </h2>
+                <p class="text-xl md:text-2xl text-slate-300 leading-relaxed font-light">
+                    To empower every student, athlete, and outdoor worker to reach their peak mental and physical
+                    potential through <span class="text-blue-300 font-medium">science-backed, real-time hydration and
+                        electrolyte insights</span>.
+                </p>
+            </div>
+
+            <!-- Our Values Header -->
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-playfair text-white">Our Values</h3>
+            </div>
+
+            <!-- Values Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+                <!-- Value 1: Scientific Precision -->
+                <div
+                    class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-colors group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <i data-lucide="flask-conical" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">Scientific Precision</h4>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">
+                        We build with rigorous physiology and engineering at the core—prioritizing reliable sensing,
+                        signal quality, and meaningful interpretation of sweat data.
+                    </p>
+                </div>
+
+                <!-- Value 2: Proactive Prevention -->
+                <div
+                    class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-colors group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">Proactive Prevention</h4>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">
+                        We believe the best intervention happens early. NeuroHydro is designed to warn and guide before
+                        dehydration impacts performance.
+                    </p>
+                </div>
+
+                <!-- Value 3: Human-Centered Care -->
+                <div
+                    class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-colors group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <i data-lucide="heart-handshake" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">Human-Centered Care</h4>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">
+                        Data should feel supportive, not stressful—so our insights are designed to be encouraging,
+                        actionable, and easy to follow in real life.
+                    </p>
+                </div>
+
+                <!-- Value 4: Accessibility + Real-World Impact -->
+                <div
+                    class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-colors group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <i data-lucide="globe" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">Accessibility + Real-World Impact</h4>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">
+                        We're building for everyday achievers—not just elite athletes—starting with students, athletes,
+                        and outdoor workers who need practical tools that fit daily life.
+                    </p>
+                </div>
+
+                <!-- Value 5: Long-Term Engagement -->
+                <div
+                    class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-colors group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">Long-Term Engagement</h4>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">
+                        We care about habits, not hype—tracking patterns over time (hydration–mood–focus trends) and
+                        improving the product through feedback and iteration.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Section -->
+    <section id="waitlist" class="py-24 bg-gradient-to-br from-blue-900 to-slate-900 text-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2 space-y-8">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm font-bold uppercase tracking-wide">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Join the Movement
+                    </div>
+                    <h2 class="text-4xl lg:text-5xl font-extrabold leading-tight">Be the First to Unlock Your Potential.
+                    </h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">Join our exclusive waitlist for early access.</p>
+                </div>
+                <div class="lg:w-1/2 w-full">
+                    <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-3xl shadow-2xl">
+                        <form id="waitlist-form" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Full Name</label>
+                                <input type="text" required
+                                    class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                    placeholder="Jane Doe">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Email Address</label>
+                                <input type="email" required
+                                    class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                    placeholder="jane@example.com">
+                            </div>
+                            <button type="submit"
+                                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-colors shadow-lg">Join
+                                Waitlist</button>
+                        </form>
+                        <div id="waitlist-success" class="hidden text-center py-12 animate-fadeIn">
+                            <div
+                                class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">You're on the list!</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 text-slate-300 py-16 border-t border-slate-800">
+        <div class="container mx-auto px-6 text-center text-sm">
+            © 2025 <span class="font-fraunces font-bold text-white">NeuroHydro</span>. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. Init Icons ---
+        lucide.createIcons();
+
+        // --- 2. Navbar Scroll Effect ---
+        const navbar = document.getElementById('navbar');
+        const brand = navbar.querySelector('.font-fraunces');
+        const navLinks = navbar.querySelectorAll('.nav-link');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const waitlistBtn = navbar.querySelector('a[href="#waitlist"].font-playfair');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                // Scrolled: White Background, Dark Text
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.remove('bg-transparent');
+
+                // Brand
+                brand.classList.remove('text-white');
+                brand.classList.add('text-slate-900');
+
+                // Links
+                navLinks.forEach(link => {
+                    link.classList.remove('text-white/90', 'hover:text-white');
+                    link.classList.add('text-slate-600', 'hover:text-slate-900');
+                });
+
+                // Mobile Toggle
+                mobileBtn.classList.remove('text-white');
+                mobileBtn.classList.add('text-slate-900');
+
+                // Waitlist Button (Solid Dark)
+                waitlistBtn.classList.remove('bg-white/10', 'border-white/30', 'text-white', 'hover:bg-white', 'hover:text-slate-900');
+                waitlistBtn.classList.add('bg-slate-900', 'text-white', 'hover:bg-slate-800');
+
+            } else {
+                // Top: Transparent Background, White Text
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.add('bg-transparent');
+
+                // Brand
+                brand.classList.add('text-white');
+                brand.classList.remove('text-slate-900');
+
+                // Links
+                navLinks.forEach(link => {
+                    link.classList.add('text-white/90', 'hover:text-white');
+                    link.classList.remove('text-slate-600', 'hover:text-slate-900');
+                });
+
+                // Mobile Toggle
+                mobileBtn.classList.add('text-white');
+                mobileBtn.classList.remove('text-slate-900');
+
+                // Waitlist Button (Glassmorphism)
+                waitlistBtn.classList.add('bg-white/10', 'border-white/30', 'text-white', 'hover:bg-white', 'hover:text-slate-900');
+                waitlistBtn.classList.remove('bg-slate-900', 'text-white', 'hover:bg-slate-800');
+            }
+        });
+
+        // --- 3. Mobile Menu Toggle ---
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+        });
+
+        // --- 4. Hero Parallax Effect (Disabled) ---
+        /*
+        const hero = document.getElementById('hero');
+        const heroContent = document.getElementById('hero-content');
+        hero.addEventListener('mousemove', (e) => {
+            const x = (e.clientX - window.innerWidth / 2) / 50;
+            const y = (e.clientY - window.innerHeight / 2) / 50;
+            heroContent.style.transform = `translate(${x}px, ${y}px)`;
+        });
+        */
+
+        // --- 5. Interactive Product Prototype ---
+        const layers = {
+            film: { label: 'Protective Waterproof Film', desc: 'A breathable, semi-permeable barrier that shields electronics from external water and contaminants.' },
+            pet: { label: 'PET Sensing Layer', desc: 'Flexible circuit board housing the electrochemical sensing electrodes.' },
+            micro: { label: 'Microfluidic Section', desc: 'Precision-engineered SU-8 channels utilize capillary action to passively transport sweat.' },
+            filler: { label: 'Hydrophilic Filler Layer', desc: 'A specialized porous interface that rapidly wicks sweat from skin pores.' },
+            adhesive: { label: 'Flexible Skin Adhesive', desc: 'Medical-grade bio-adhesive designed for conformal skin contact to minimize noise.' }
+        };
+
+        const layerBtns = document.querySelectorAll('.layer-btn');
+        const layerVisuals = document.querySelectorAll('.layer-visual');
+        const titleEl = document.getElementById('layer-title');
+        const descEl = document.getElementById('layer-desc');
+
+        function setActiveLayer(id) {
+            // Reset Styles
+            layerBtns.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+                btn.classList.add('text-slate-400');
+
+                const icon = btn.querySelector('i, svg');
+                if (icon) icon.classList.add('opacity-0');
+            });
+            layerVisuals.forEach(vis => {
+                vis.classList.remove('scale-105', 'translate-y-[-10px]', 'border-blue-400', 'border-white/60', 'border-cyan-400', 'border-white', 'border-slate-400', 'shadow-[0_0_30px_rgba(59,130,246,0.6)]');
+
+                const span = vis.querySelector('span');
+                if (span) {
+                    span.classList.remove('text-blue-300', 'text-white', 'text-cyan-300', 'text-slate-200');
+                    span.classList.add('text-slate-400');
+                }
+            });
+
+            if (id) {
+                // Activate Button
+                const btn = document.querySelector(`button[data-target="${id}"]`);
+                if (btn) {
+                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+                    btn.classList.remove('text-slate-400');
+                    const icon = btn.querySelector('i, svg');
+                    if (icon) icon.classList.remove('opacity-0');
+                }
+
+                // Activate Visual
+                const vis = document.querySelector(`.layer-visual[data-id="${id}"]`);
+                if (vis) {
+                    vis.classList.add('scale-105');
+
+                    const span = vis.querySelector('span');
+                    if (id === 'film') { vis.classList.add('border-blue-400'); if (span) span.classList.add('text-blue-300'); }
+                    if (id === 'pet') { vis.classList.add('border-white/60'); if (span) span.classList.add('text-white'); }
+                    if (id === 'micro') { vis.classList.add('border-cyan-400'); if (span) span.classList.add('text-cyan-300'); }
+                    if (id === 'filler') { vis.classList.add('border-white'); if (span) span.classList.add('text-white'); }
+                    if (id === 'adhesive') { vis.classList.add('border-slate-400'); if (span) span.classList.add('text-slate-200'); }
+
+                    if (span) span.classList.remove('text-slate-400');
+                }
+
+                // Update Text
+                titleEl.textContent = layers[id].label;
+                descEl.textContent = layers[id].desc;
+            } else {
+                titleEl.textContent = 'Select a Layer';
+                descEl.textContent = 'Hover over the list above or the diagram to explore the advanced sensor stack.';
+            }
+        }
+
+        layerBtns.forEach(btn => {
+            btn.addEventListener('mouseenter', () => setActiveLayer(btn.dataset.target));
+            btn.addEventListener('mouseleave', () => setActiveLayer(null));
+        });
+        layerVisuals.forEach(vis => {
+            vis.addEventListener('mouseenter', () => setActiveLayer(vis.dataset.id));
+            vis.addEventListener('mouseleave', () => setActiveLayer(null));
+        });
+
+        // --- 10. Team Member Interactivity ---
+        const memberCards = document.querySelectorAll('.member-card');
+
+        memberCards.forEach(card => {
+            // Main card click - expand
+            card.addEventListener('click', (e) => {
+                // Ignore clicks on close button (handled separately)
+                if (e.target.closest('.close-bio-btn')) return;
+
+                const isActive = card.classList.contains('active');
+
+                // Collapse all others
+                memberCards.forEach(c => {
+                    if (c !== card) c.classList.remove('active');
+                });
+
+                // Toggle current if expanding.
+                if (!isActive) {
+                    card.classList.add('active');
+                }
+            });
+
+            // Close button click
+            const closeBtn = card.querySelector('.close-bio-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent card click
+                    card.classList.remove('active');
+                });
+            }
+        });
+
+        // Click outside to close
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.member-card')) {
+                memberCards.forEach(c => c.classList.remove('active'));
+            }
+        });
+
+
+
+        // --- 8. Waitlist Form ---
+        document.getElementById('waitlist-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = document.getElementById('waitlist-form');
+            const success = document.getElementById('waitlist-success');
+
+            form.classList.add('opacity-50', 'pointer-events-none');
+            setTimeout(() => {
+                form.classList.add('hidden');
+                success.classList.remove('hidden');
+            }, 800);
+        });
+
+        // --- 9. Interactive Product Layers ---
+        const layerData = {
+            1: {
+                title: 'Protective Waterproof Film',
+                desc: 'A breathable, semi-permeable barrier that shields the electronics from external water and contaminants while allowing sweat vapor to pass through.'
+            },
+            2: {
+                title: 'PET Sensing Layer',
+                desc: 'Flexible polyethylene terephthalate circuit board housing the electrochemical sensing electrodes that detect sodium, potassium, and pH levels.'
+            },
+            3: {
+                title: 'Microfluidic Section',
+                desc: 'Precision-engineered SU-8 photoresist channels utilize capillary action to passively transport sweat to the sensing electrodes without pumps.'
+            },
+            4: {
+                title: 'Hydrophilic Filler Layer',
+                desc: 'A specialized porous hydrophilic interface that rapidly wicks sweat from skin pores, ensuring consistent analyte delivery to the microfluidics.'
+            },
+            5: {
+                title: 'Flexible Skin Adhesive',
+                desc: 'Medical-grade bio-adhesive designed for conformal skin contact, minimizing motion artifacts and ensuring reliable signal acquisition during activity.'
+            }
+        };
+
+        const layerRegions = document.querySelectorAll('.layer-region');
+        const layerIndicators = document.querySelectorAll('.layer-indicator');
+        const layerInfoPanel = document.getElementById('layer-info-panel');
+        const layerNumberEl = document.getElementById('layer-number');
+        const layerTitleEl = document.getElementById('layer-title');
+        const layerDescEl = document.getElementById('layer-desc');
+
+        let activeLayer = null;
+
+        function showLayerInfo(layerId) {
+            if (!layerData[layerId]) return;
+
+            const data = layerData[layerId];
+            layerNumberEl.textContent = layerId;
+            layerTitleEl.textContent = data.title;
+            layerDescEl.textContent = data.desc;
+            layerInfoPanel.classList.add('visible');
+
+            // Update active states
+            layerRegions.forEach(r => {
+                r.classList.toggle('active', r.dataset.layer === String(layerId));
+            });
+            layerIndicators.forEach(i => {
+                i.classList.toggle('active', i.dataset.layer === String(layerId));
+            });
+
+            activeLayer = layerId;
+        }
+
+        function hideLayerInfo() {
+            layerInfoPanel.classList.remove('visible');
+            layerRegions.forEach(r => r.classList.remove('active'));
+            layerIndicators.forEach(i => i.classList.remove('active'));
+            activeLayer = null;
+        }
+
+        // Event listeners for SVG regions
+        layerRegions.forEach(region => {
+            region.addEventListener('mouseenter', () => {
+                showLayerInfo(parseInt(region.dataset.layer));
+            });
+            region.addEventListener('click', () => {
+                showLayerInfo(parseInt(region.dataset.layer));
+            });
+        });
+
+        // Event listeners for indicator dots
+        layerIndicators.forEach(indicator => {
+            indicator.addEventListener('mouseenter', () => {
+                showLayerInfo(parseInt(indicator.dataset.layer));
+            });
+            indicator.addEventListener('click', () => {
+                showLayerInfo(parseInt(indicator.dataset.layer));
+            });
+        });
+
+        // Hide info panel when mouse leaves the entire product container
+        const productContainer = document.getElementById('product-layers-container');
+        if (productContainer) {
+            productContainer.addEventListener('mouseleave', () => {
+                hideLayerInfo();
+            });
+        }
+
+
+        // --- 11. Team Slider Navigation ---
+        const teamContainer = document.querySelector('.team-container');
+        const teamNextBtn = document.getElementById('team-next');
+        const teamPrevBtn = document.getElementById('team-prev');
+
+        if (teamContainer && teamNextBtn && teamPrevBtn) {
+            const scrollAmount = 320; // Card width (280) + gap (24) approx
+
+            teamNextBtn.addEventListener('click', () => {
+                teamContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            teamPrevBtn.addEventListener('click', () => {
+                teamContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+
+</htm
